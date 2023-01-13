@@ -11,14 +11,20 @@ from fastapi import FastAPI, Body, Query, Path
 
 app = FastAPI()
 
+#Enums
+class HairColor(Enum):
+    brown = "brown"
+    black = "black"
+    blonde = "blonde"
+    red = "red"
 
 #------ MODELS ------
 class Person(BaseModel):
-    name: str
-    last_name: str
-    age: int
-    hair_color: Optional[str] = None
-    is_married: Optional[bool] = None
+    name: str = Field(min_length=1, max_length=50)
+    last_name: str = Field(min_length=1, max_length=50)
+    age: int = Field(gt=0, lt=90)
+    hair_color: Optional[HairColor] = Field(default=None)
+    is_married: Optional[bool] = Field(default=None)
 
 class Location(BaseModel):
     postal_code: int
