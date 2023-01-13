@@ -1,8 +1,10 @@
 #python
 from typing import Optional
+from enum import Enum
 
 #Pydantic
 from pydantic import BaseModel
+from pydantic import Field
 
 #FastApi
 from fastapi import FastAPI, Body, Query, Path
@@ -18,17 +20,22 @@ class Person(BaseModel):
     hair_color: Optional[str] = None
     is_married: Optional[bool] = None
 
+class Location(BaseModel):
+    postal_code: int
+    city:  str
+    country: str
 
 #------ PATHs ------
 @app.get("/")
 def home():
     return {"Hello": "World"}
 
-#Request and response body
 
+#Request and response body
 @app.post("/person/new")
 def create_person(person: Person = Body()):
     return person
+
 
 #Validations query parameters
 @app.get("/person/detail")
@@ -50,8 +57,8 @@ def get_person(
         "age": age
     }
 
-#Validations Path parameters
 
+#Validations Path parameters
 @app.get("/person/detail/{person_id}")
 def get_person(
     person_id: int = Path(
@@ -60,4 +67,20 @@ def get_person(
             description="Id needed to acces the person"
         )
 ):
-    return {person_id: "Its exists"}
+    return {person_id: "Its exists"} 
+
+
+# Validaciones request Body
+@app.put("/person/{person_id}")
+def update_person(
+        person_id: int = Path(
+            gt=0,
+            title="Person ID",
+            description=" This is the person ID"
+    ), 
+        person: Person = Body(),
+        location: Location = Body()
+    ):
+    results = person.dict()
+    results.update(location.dict())
+    return results
