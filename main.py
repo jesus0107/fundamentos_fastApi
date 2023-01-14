@@ -4,7 +4,7 @@ from enum import Enum
 
 #Pydantic
 from pydantic import BaseModel
-from pydantic import Field
+from pydantic import Field, EmailStr, HttpUrl
 
 #FastApi
 from fastapi import FastAPI, Body, Query, Path
@@ -22,14 +22,16 @@ class HairColor(Enum):
 class Person(BaseModel):
     name: str = Field(min_length=1, max_length=50)
     last_name: str = Field(min_length=1, max_length=50)
-    age: int = Field(gt=0, lt=90)
+    age: int = Field(gt=17, lt=90)
+    email: EmailStr = Field()
+    website_url: HttpUrl = Field()
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
 
 class Location(BaseModel):
-    postal_code: int
-    city:  str
-    country: str
+    postal_code: int = Field(gt=0)
+    city:  str = Field(max_length=50)
+    country: str = Field(max_length=50)
 
 #------ PATHs ------
 @app.get("/")
