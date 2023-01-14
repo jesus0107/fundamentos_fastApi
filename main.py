@@ -75,11 +75,13 @@ def get_person(
             min_length=1, 
             max_length=50,
             title="Person name",
-            description="This is the person name. Its between 1 and 50 characters"
+            description="This is the person name. Its between 1 and 50 characters",
+            example="Jesus"
         ),
     age: int = Query(
             title="Person age", 
-            description="This is the person age. Its required"
+            description="This is the person age. Its required",
+            example=23
         )
 ):
     return {
@@ -94,7 +96,8 @@ def get_person(
     person_id: int = Path(
             gt=0,
             title="Person id", 
-            description="Id needed to acces the person"
+            description="Id needed to acces the person",
+            example=12
         )
 ):
     return {person_id: "Its exists"} 
@@ -106,7 +109,8 @@ def update_person(
         person_id: int = Path(
             gt=0,
             title="Person ID",
-            description=" This is the person ID"
+            description=" This is the person ID",
+            example=13
     ), 
         person: Person = Body(),
         location: Location = Body()
