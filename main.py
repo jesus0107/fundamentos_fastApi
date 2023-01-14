@@ -20,18 +20,40 @@ class HairColor(Enum):
 
 #------ MODELS ------
 class Person(BaseModel):
-    name: str = Field(min_length=1, max_length=50)
-    last_name: str = Field(min_length=1, max_length=50)
-    age: int = Field(gt=17, lt=90)
-    email: EmailStr = Field()
-    website_url: HttpUrl = Field()
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
+    name: str = Field(min_length=1, max_length=50, example="Martha")
+    last_name: str = Field(min_length=1, max_length=50, example="Patricia")
+    age: int = Field(gt=17, lt=90, example="28")
+    email: EmailStr = Field(example="martha@example.com")
+    website_url: HttpUrl = Field(example="http://marthasite.com")
+    hair_color: Optional[HairColor] = Field(default=None, example="brown")
+    is_married: Optional[bool] = Field(default=None, example="True")
+
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "first_name": "Jesus",
+    #             "last_name":  "Cruz",
+    #             "age": 18,
+    #             "email": "example@example.com",
+    #             "website_url": "http://www.mysite.com",
+    #             "hair_color": "black",
+    #             "is_married": False
+    #         }
+    #     }
 
 class Location(BaseModel):
     postal_code: int = Field(gt=0)
     city:  str = Field(max_length=50)
     country: str = Field(max_length=50)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "postal_code": 12345,
+                "city": "Guadalajara",
+                "country": "Mexico"
+            }
+        }
 
 #------ PATHs ------
 @app.get("/")
