@@ -19,7 +19,7 @@ class HairColor(Enum):
     red = "red"
 
 #------ MODELS ------
-class Person(BaseModel):
+class PersonBase(BaseModel):
     name: str = Field(min_length=1, max_length=50, example="Martha")
     last_name: str = Field(min_length=1, max_length=50, example="Patricia")
     age: int = Field(gt=17, lt=90, example="28")
@@ -28,7 +28,7 @@ class Person(BaseModel):
     hair_color: Optional[HairColor] = Field(default=None, example="brown")
     is_married: Optional[bool] = Field(default=None, example="True")
 
-    # class Config:
+        # class Config:
     #     schema_extra = {
     #         "example": {
     #             "first_name": "Jesus",
@@ -40,6 +40,14 @@ class Person(BaseModel):
     #             "is_married": False
     #         }
     #     }
+
+class Person(PersonBase):
+    password: str = Field(min_length=8,  example="mypassword")
+
+
+class PersonOut(PersonBase):
+    pass
+
 
 class Location(BaseModel):
     postal_code: int = Field(gt=0)
@@ -62,13 +70,13 @@ def home():
 
 
 #Request and response body
-@app.post("/person/new")
+@app.post(path="/person/new", response_model=PersonOut)
 def create_person(person: Person = Body()):
     return person
 
 
 #Validations query parameters
-@app.get("/person/detail")
+@app.get(path="/person/detail")
 def get_person(
     name: Optional[str] = Query(
             None, 
@@ -91,7 +99,7 @@ def get_person(
 
 
 #Validations Path parameters
-@app.get("/person/detail/{person_id}")
+@app.get(path="/person/detail/{person_id}")
 def get_person(
     person_id: int = Path(
             gt=0,
@@ -104,7 +112,7 @@ def get_person(
 
 
 # Validaciones request Body
-@app.put("/person/{person_id}")
+@app.put(path="/person/{person_id}", response_model=PersonOut)
 def update_person(
         person_id: int = Path(
             gt=0,
