@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from pydantic import Field, EmailStr, HttpUrl
 
 #FastApi
-from fastapi import FastAPI, Body, Query, Path
+from fastapi import FastAPI, Body, Query, Path, status
 
 app = FastAPI()
 
@@ -64,19 +64,19 @@ class Location(BaseModel):
         }
 
 #------ PATHs ------
-@app.get("/")
+@app.get(path="/", status_code=status.HTTP_200_OK)
 def home():
     return {"Hello": "World"}
 
 
 #Request and response body
-@app.post(path="/person/new", response_model=PersonOut)
+@app.post(path="/person/new", response_model=PersonOut, status_code=status.HTTP_201_CREATED)
 def create_person(person: Person = Body()):
     return person
 
 
 #Validations query parameters
-@app.get(path="/person/detail")
+@app.get(path="/person/detail", status_code=status.HTTP_200_OK)
 def get_person(
     name: Optional[str] = Query(
             None, 
@@ -99,7 +99,7 @@ def get_person(
 
 
 #Validations Path parameters
-@app.get(path="/person/detail/{person_id}")
+@app.get(path="/person/detail/{person_id}", status_code=status.HTTP_200_OK)
 def get_person(
     person_id: int = Path(
             gt=0,
@@ -112,7 +112,7 @@ def get_person(
 
 
 # Validaciones request Body
-@app.put(path="/person/{person_id}", response_model=PersonOut)
+@app.put(path="/person/{person_id}", response_model=PersonOut, status_code=status.HTTP_200_OK)
 def update_person(
         person_id: int = Path(
             gt=0,
