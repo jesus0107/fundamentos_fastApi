@@ -7,7 +7,10 @@ from pydantic import BaseModel
 from pydantic import Field, EmailStr, HttpUrl
 
 #FastApi
-from fastapi import FastAPI, Body, Query, Path, Form, status, Header, Cookie, File, UploadFile
+from fastapi import FastAPI
+from fastapi import status
+from fastapi import HTTPException
+from fastapi import Body, Query, Path, Form, Header, Cookie, File, UploadFile
 
 app = FastAPI()
 
@@ -104,6 +107,7 @@ def get_person(
 
 
 #Validations Path parameters
+my_ids = [1,2,3,4,5]
 @app.get(path="/person/detail/{person_id}", status_code=status.HTTP_200_OK)
 def get_person(
     person_id: int = Path(
@@ -113,6 +117,11 @@ def get_person(
             example=12
         )
 ):
+    if person_id not in my_ids:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Person not found"
+        )
     return {person_id: "Its exists"} 
 
 
