@@ -72,19 +72,24 @@ class Location(BaseModel):
         }
 
 #------ PATHs ------
-@app.get(path="/", status_code=status.HTTP_200_OK)
+@app.get(path="/", status_code=status.HTTP_200_OK, tags=["home"])
 def home():
     return {"Hello": "World"}
 
 
 #Request and response body
-@app.post(path="/person/new", response_model=PersonOut, status_code=status.HTTP_201_CREATED)
+@app.post(
+        path="/person/new", 
+        response_model=PersonOut, 
+        status_code=status.HTTP_201_CREATED,
+        tags=["person"]
+    )
 def create_person(person: Person = Body()):
     return person
 
 
 #Validations query parameters
-@app.get(path="/person/detail", status_code=status.HTTP_200_OK)
+@app.get(path="/person/detail", status_code=status.HTTP_200_OK,tags=["person"])
 def get_person(
     name: Optional[str] = Query(
             None, 
@@ -108,7 +113,7 @@ def get_person(
 
 #Validations Path parameters
 my_ids = [1,2,3,4,5]
-@app.get(path="/person/detail/{person_id}", status_code=status.HTTP_200_OK)
+@app.get(path="/person/detail/{person_id}", status_code=status.HTTP_200_OK, tags=["person"])
 def get_person(
     person_id: int = Path(
             gt=0,
@@ -122,11 +127,12 @@ def get_person(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Person not found"
         )
+
     return {person_id: "Its exists"} 
 
 
 # Validaciones request Body
-@app.put(path="/person/{person_id}", response_model=PersonOut, status_code=status.HTTP_200_OK)
+@app.put(path="/person/{person_id}", response_model=PersonOut, status_code=status.HTTP_200_OK,tags=["person"])
 def update_person(
         person_id: int = Path(
             gt=0,
@@ -142,12 +148,12 @@ def update_person(
     return results
 
 # ------ Form
-@app.post(path="/login", status_code=status.HTTP_200_OK, response_model=LoginOut)
+@app.post(path="/login", status_code=status.HTTP_200_OK, response_model=LoginOut,tags=["person"])
 def login( username: str = Form(), password: str = Form()):
     return LoginOut(username=username)
 
 # ------ Cookies and headers parameters
-@app.post(path="/contact", status_code=status.HTTP_200_OK)
+@app.post(path="/contact", status_code=status.HTTP_200_OK, tags=["contact"])
 def contact(
         first_name: str = Form(
             max_length=20, 
@@ -164,7 +170,7 @@ def contact(
 
 
 # ------------ files
-@app.post(path="/upload-image", status_code=status.HTTP_200_OK)
+@app.post(path="/upload-image", status_code=status.HTTP_200_OK,tags=["upload_files"])
 def upload_image(image: UploadFile = File()):
     return {
         "file_name": image.filename,
